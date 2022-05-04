@@ -22,6 +22,9 @@ locals {
   example_ondrejsika_vars = {
     HELLO = "ahoj"
   }
+  example_ondrejsika_file_vars = {
+    README = file("./README.md")
+  }
 }
 
 data "gitlab_group" "example" {
@@ -63,5 +66,17 @@ resource "gitlab_project_variable" "example_ondrejsika" {
   value             = each.value
   protected         = false
   masked            = false
+  environment_scope = "*"
+}
+
+resource "gitlab_project_variable" "example_ondrejsika_file" {
+  for_each = local.example_ondrejsika_file_vars
+
+  project           = data.gitlab_project.example_ondrejsika.id
+  key               = each.key
+  value             = each.value
+  protected         = false
+  masked            = false
+  variable_type     = "file"
   environment_scope = "*"
 }
